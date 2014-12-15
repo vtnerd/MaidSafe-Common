@@ -56,6 +56,10 @@ ms_glob_dir(CommonContainersTests ${CommonSourcesDir}/containers/tests "Containe
 ms_glob_dir(CommonDataTypes ${CommonSourcesDir}/data_types "Data Types")
 ms_glob_dir(CommonDataTypesTests ${CommonSourcesDir}/data_types/tests "Data Types Tests")
 
+ms_glob_dir(CommonHashAlgorithms ${CommonSourcesDir}/hash/algorithms "Hash algorithms")
+ms_glob_dir(CommonHashDefinitions ${CommonSourcesDir}/hash "Hash definitions")
+ms_glob_dir(CommonHashTests ${CommonSourcesDir}/hash/tests "Hash Tests")
+
 ms_glob_dir(CommonSerialisation ${CommonSourcesDir}/serialisation "Serialisation")
 ms_glob_dir(CommonSerialisationTests ${CommonSourcesDir}/serialisation/tests "Serialisation Tests")
 
@@ -82,6 +86,8 @@ ms_add_static_library(maidsafe_common
     ${CommonAuthenticationDetailAllFiles}
     ${CommonContainersAllFiles}
     ${CommonDataTypesAllFiles}
+    ${CommonHashAlgorithmsAllFiles}
+    ${CommonHashDefinitionsAllFiles}
     ${CommonSerialisationAllFiles}
     ${CommonTcpAllFiles})
 add_dependencies(maidsafe_common boost_process)
@@ -167,6 +173,7 @@ if(INCLUDE_TESTS)
   ms_add_executable(test_common "Tests/Common"
       ${CommonTestsAllFiles}
       ${CommonAuthenticationTestsAllFiles}
+      ${CommonHashTestsAllFiles}
       ${CommonTcpTestsAllFiles}
       ${CommonContainersTestsAllFiles}
       ${CommonDataTypesTestsAllFiles}
