@@ -39,7 +39,7 @@ class NodeId {
 
   NodeId(const NodeId& other);
   NodeId(NodeId&& other) MAIDSAFE_NOEXCEPT;
-  NodeId& operator=(const NodeId& other) = default;
+  NodeId& operator=(const NodeId&) = default;
   NodeId& operator=(NodeId&& other) MAIDSAFE_NOEXCEPT;
 
   // Creates a NodeId from a raw (decoded) string.  Will throw if 'id' is invalid.
@@ -83,7 +83,7 @@ class NodeId {
   // Required by Cereal
   template <typename Archive>
   Archive& save(Archive& ref_archive) const {
-    return ref_archive(raw_id_);
+    return ref_archive(string());
   }
 
   // Returns true if both 'raw_id_'s are equal or if IsValid() is false for both.  Doesn't throw.
