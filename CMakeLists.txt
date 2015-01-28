@@ -61,7 +61,9 @@ ms_glob_dir(CommonHashDefinitions ${CommonSourcesDir}/hash "Hash definitions")
 ms_glob_dir(CommonHashTests ${CommonSourcesDir}/hash/tests "Hash Tests")
 
 ms_glob_dir(CommonSerialisation ${CommonSourcesDir}/serialisation "Serialisation")
+ms_glob_dir(CommonSerialisationTypes ${CommonSourcesDir}/serialisation/types "Serialisation Types")
 ms_glob_dir(CommonSerialisationTests ${CommonSourcesDir}/serialisation/tests "Serialisation Tests")
+ms_glob_dir(CommonSerialisationTypesTests ${CommonSourcesDir}/serialisation/types/tests "Serialisation Types Tests")
 
 ms_glob_dir(CommonTcp ${CommonSourcesDir}/tcp "TCP")
 ms_glob_dir(CommonTcpTests ${CommonSourcesDir}/tcp/tests "TCP Tests")
@@ -89,6 +91,7 @@ ms_add_static_library(maidsafe_common
     ${CommonHashAlgorithmsAllFiles}
     ${CommonHashDefinitionsAllFiles}
     ${CommonSerialisationAllFiles}
+    ${CommonSerialisationTypesAllFiles}
     ${CommonTcpAllFiles})
 add_dependencies(maidsafe_common boost_process boost_expected)
 
@@ -126,6 +129,9 @@ target_link_libraries(maidsafe_common
     ${BoostProgramOptionsLibs}
     ${JustThread_LIBRARIES}
     ${SYS_LIB})
+if(ANDROID_BUILD)
+  target_link_libraries(maidsafe_common "${ANDROID_NDK_TOOLCHAIN_ROOT}/sysroot/usr/lib/liblog.so")
+endif()
 if(TARGET check_sanitizer_blacklist)
   add_dependencies(maidsafe_common check_sanitizer_blacklist)
 endif()
@@ -177,7 +183,8 @@ if(INCLUDE_TESTS)
       ${CommonTcpTestsAllFiles}
       ${CommonContainersTestsAllFiles}
       ${CommonDataTypesTestsAllFiles}
-      ${CommonSerialisationTestsAllFiles})
+      ${CommonSerialisationTestsAllFiles}
+      ${CommonSerialisationTypesTestsAllFiles})
   target_link_libraries(test_common maidsafe_test)
   target_include_directories(test_common PRIVATE ${PROJECT_SOURCE_DIR}/src)
   # TODO(Fraser#5#): 2014-12-08 - BEFORE_RELEASE - remove this define and all associated C++ code.
