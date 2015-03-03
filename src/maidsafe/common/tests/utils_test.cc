@@ -110,6 +110,17 @@ TEST(UtilsTest, BEH_Ratios) {
   EXPECT_EQ((Bytes(2) - Bytes(1)), Bytes(1));
   EXPECT_EQ(Bytes(1).count(), 1ULL);
   EXPECT_EQ(KiloBytes(1).count(), 1ULL);
+
+  const ExbiBytes exbibyte(1);
+  EXPECT_EQ(1, exbibyte.count());
+  EXPECT_EQ(1024, PebiBytes(exbibyte).count());
+  EXPECT_EQ(1048576, TebiBytes(exbibyte).count());
+  EXPECT_EQ(1073741824, GibiBytes(exbibyte).count());
+  EXPECT_EQ(1099511627776ULL, MebiBytes(exbibyte).count());
+  EXPECT_EQ(1125899906842624ULL, KebiBytes(exbibyte).count());
+  EXPECT_EQ(1152921504606846976ULL, Bytes(exbibyte).count());
+
+  EXPECT_EQ(5245880, Bytes(MebiBytes(5) + KiloBytes(3)).count());
 }
 
 TEST(UtilsTest, BEH_BytesToDecimalSiUnits) {

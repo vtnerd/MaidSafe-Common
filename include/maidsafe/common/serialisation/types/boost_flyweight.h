@@ -54,7 +54,7 @@ void load(Archive& archive, boost::flyweight<Type, Params...>& flyweight) {
   if(id & detail::msb_32bit) {
     Type object{};
     archive(make_nvp("data", object));
-    ptr = std::make_shared<Helper>(boost::flyweight<Type, Params...>{object});
+    ptr = std::make_shared<Helper>(boost::flyweight<Type, Params...>{std::move(object)});
     archive.registerSharedPointer(id, ptr);
   } else {
     ptr = std::static_pointer_cast<Helper>(archive.getSharedPointer(id));

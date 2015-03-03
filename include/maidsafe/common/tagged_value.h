@@ -50,6 +50,11 @@ struct TaggedValue {
     return archive(data);
   }
 
+  template<typename HashAlgorithm>
+  void HashAppend(HashAlgorithm& hash) const {
+    hash(data);
+  }
+
   T data;
 };
 

@@ -41,8 +41,11 @@ class ImmutableData {
   ImmutableData(Name name, serialised_type serialised_immutable_data);
   serialised_type Serialise() const;
 
-  Name name() const { return name_; }
-  NonEmptyString data() const { return data_; }
+  const Name& name() const & { return name_; }
+  Name&& name() && { return std::move(name_); }
+  
+  const NonEmptyString& data() const & { return data_; }
+  NonEmptyString&& data() && { return std::move(data_); }
 
   friend void swap(ImmutableData& lhs, ImmutableData& rhs);
 

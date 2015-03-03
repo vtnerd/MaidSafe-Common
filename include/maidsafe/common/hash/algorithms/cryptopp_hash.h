@@ -15,25 +15,41 @@
 
     See the Licences for the specific language governing permissions and limitations relating to
     use of the MaidSafe Software.                                                                 */
-#ifndef MAIDSAFE_COMMON_HASH_HASH_CONTIGUOUS_H_
-#define MAIDSAFE_COMMON_HASH_HASH_CONTIGUOUS_H_
+#ifndef MAIDSAFE_COMMON_HASH_ALGORITHMS_CRYPTOPP_HASH_H_
+#define MAIDSAFE_COMMON_HASH_ALGORITHMS_CRYPTOPP_HASH_H_
 
-#include <type_traits>
+#include <array>
+#include <cstdint>
+
+#include "maidsafe/common/hash/algorithms/hash_algorithm_base.h"
+#include "maidsafe/common/types.h"
 
 namespace maidsafe {
 
-// Integral types are hashed directly.
-template<typename Type, typename Enable = void>
-struct IsContiguousHashable
-  : std::integral_constant<bool, std::is_integral<Type>::value || std::is_enum<Type>::value>{};
+template<typename HashAlgorithm>
+class CryptoppHash : public detail::HashAlgorithmBase<CryptoppHash<HashAlgorithm>> {
+ public:
+  using Digest = std::array<byte, HashAlgorithm::DIGESTSIZE>;
 
-template<typename HashAlgorithm, typename Contiguous>
-inline
-typename std::enable_if<IsContiguousHashable<Contiguous>::value>::type HashAppend(
-    HashAlgorithm& hash, const Contiguous& value) {
-  hash.Update(reinterpret_cast<const std::uint8_t*>(&value), sizeof(value));
-}
+  CryptoppHash()
+    : hash_algorithm() {
+  }
+
+  void Update(const byte* in, std::uint64_t inlen) {
+    hash_algorithm.Update(in, inlen);
+  }
+
+  Digest Finalize() {
+    Digest digest{};
+    assert(digest.size() == hash_algorithm.DigestSize());
+    hash_algorithm.Final(digest.data());
+    return digest;
+  }
+
+ private:
+  HashAlgorithm hash_algorithm;
+};
 
 }  // namespace maidsafe
 
-#endif  // MAIDSAFE_COMMON_HASH_HASH_CONTIGUOUS_H_
+#endif  // MAIDSAFE_COMMON_HASH_ALGORITHMS_CRYPTOPP_HASH_H_

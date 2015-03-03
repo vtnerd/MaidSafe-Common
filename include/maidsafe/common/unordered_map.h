@@ -15,25 +15,27 @@
 
     See the Licences for the specific language governing permissions and limitations relating to
     use of the MaidSafe Software.                                                                 */
-#ifndef MAIDSAFE_COMMON_HASH_HASH_CONTIGUOUS_H_
-#define MAIDSAFE_COMMON_HASH_HASH_CONTIGUOUS_H_
 
-#include <type_traits>
+#ifndef MAIDSAFE_COMMON_UNORDERED_MAP_H_
+#define MAIDSAFE_COMMON_UNORDERED_MAP_H_
+
+#include <memory>
+#include <unordered_map>
+#include <utility>
+
+#include "maidsafe/common/hash/algorithms/siphash.h"
+#include "maidsafe/common/hash/wrappers/seeded_hash.h"
 
 namespace maidsafe {
 
-// Integral types are hashed directly.
-template<typename Type, typename Enable = void>
-struct IsContiguousHashable
-  : std::integral_constant<bool, std::is_integral<Type>::value || std::is_enum<Type>::value>{};
-
-template<typename HashAlgorithm, typename Contiguous>
-inline
-typename std::enable_if<IsContiguousHashable<Contiguous>::value>::type HashAppend(
-    HashAlgorithm& hash, const Contiguous& value) {
-  hash.Update(reinterpret_cast<const std::uint8_t*>(&value), sizeof(value));
-}
+// Maidsafe uses SipHash by default for unordered_map
+template<
+  typename Key,
+  typename Value,
+  typename Equal = std::equal_to<Key>,
+  typename Allocator = std::allocator<std::pair<const Key, Value>>>
+using unordered_map = std::unordered_map<Key, Value, SeededHash<SipHash>, Equal, Allocator>;
 
 }  // namespace maidsafe
 
-#endif  // MAIDSAFE_COMMON_HASH_HASH_CONTIGUOUS_H_
+#endif  // MAIDSAFE_COMMON_UNORDERED_MAP_H_

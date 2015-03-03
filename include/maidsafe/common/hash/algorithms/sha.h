@@ -15,25 +15,17 @@
 
     See the Licences for the specific language governing permissions and limitations relating to
     use of the MaidSafe Software.                                                                 */
-#ifndef MAIDSAFE_COMMON_HASH_HASH_CONTIGUOUS_H_
-#define MAIDSAFE_COMMON_HASH_HASH_CONTIGUOUS_H_
+#ifndef MAIDSAFE_COMMON_HASH_ALGORITHMS_SHA_H_
+#define MAIDSAFE_COMMON_HASH_ALGORITHMS_SHA_H_
 
-#include <type_traits>
+#include "cryptopp/sha.h"
+#include "maidsafe/common/hash/algorithms/cryptopp_hash.h"
 
 namespace maidsafe {
-
-// Integral types are hashed directly.
-template<typename Type, typename Enable = void>
-struct IsContiguousHashable
-  : std::integral_constant<bool, std::is_integral<Type>::value || std::is_enum<Type>::value>{};
-
-template<typename HashAlgorithm, typename Contiguous>
-inline
-typename std::enable_if<IsContiguousHashable<Contiguous>::value>::type HashAppend(
-    HashAlgorithm& hash, const Contiguous& value) {
-  hash.Update(reinterpret_cast<const std::uint8_t*>(&value), sizeof(value));
-}
-
+using SHA1 = CryptoppHash<CryptoPP::SHA1>;
+using SHA256 = CryptoppHash<CryptoPP::SHA256>;
+using SHA384 = CryptoppHash<CryptoPP::SHA384>;
+using SHA512 = CryptoppHash<CryptoPP::SHA512>;
 }  // namespace maidsafe
 
-#endif  // MAIDSAFE_COMMON_HASH_HASH_CONTIGUOUS_H_
+#endif  // MAIDSAFE_COMMON_HASH_ALGORITHMS_SHA_H_

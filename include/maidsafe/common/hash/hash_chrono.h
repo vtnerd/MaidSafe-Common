@@ -15,25 +15,25 @@
 
     See the Licences for the specific language governing permissions and limitations relating to
     use of the MaidSafe Software.                                                                 */
-#ifndef MAIDSAFE_COMMON_HASH_HASH_CONTIGUOUS_H_
-#define MAIDSAFE_COMMON_HASH_HASH_CONTIGUOUS_H_
+#ifndef MAIDSAFE_COMMON_HASH_HASH_CHRONO_H_
+#define MAIDSAFE_COMMON_HASH_HASH_CHRONO_H_
 
-#include <type_traits>
+#include <chrono>
+
+#include "maidsafe/common/hash/hash_numeric.h"
 
 namespace maidsafe {
 
-// Integral types are hashed directly.
-template<typename Type, typename Enable = void>
-struct IsContiguousHashable
-  : std::integral_constant<bool, std::is_integral<Type>::value || std::is_enum<Type>::value>{};
+template<typename HashAlgorithm, typename Rep, typename Period>
+void HashAppend(HashAlgorithm& hash, const std::chrono::duration<Rep, Period>& duration) {
+  hash(duration.count());
+}
 
-template<typename HashAlgorithm, typename Contiguous>
-inline
-typename std::enable_if<IsContiguousHashable<Contiguous>::value>::type HashAppend(
-    HashAlgorithm& hash, const Contiguous& value) {
-  hash.Update(reinterpret_cast<const std::uint8_t*>(&value), sizeof(value));
+template<typename HashAlgorithm, typename Clock, typename Duration>
+void HashAppend(HashAlgorithm& hash, const std::chrono::time_point<Clock, Duration>& time_point) {
+  hash(time_point.time_since_epoch());
 }
 
 }  // namespace maidsafe
 
-#endif  // MAIDSAFE_COMMON_HASH_HASH_CONTIGUOUS_H_
+#endif  // MAIDSAFE_COMMON_HASH_HASH_CHRONO_H_

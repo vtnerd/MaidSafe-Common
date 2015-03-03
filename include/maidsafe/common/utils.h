@@ -81,13 +81,28 @@ extern const boost::posix_time::ptime kMaidSafeEpoch;
 
 // SI units.  (note MS windows will report on the 'old' system, for drive space)
 // this is (cheekily) using chrono::duration
-typedef std::chrono::duration<uint64_t> Bytes;
-typedef std::chrono::duration<uint64_t, std::kilo> KiloBytes;
-typedef std::chrono::duration<uint64_t, std::mega> MegaBytes;
-typedef std::chrono::duration<uint64_t, std::giga> GigaBytes;
-typedef std::chrono::duration<uint64_t, std::tera> TeraBytes;
-typedef std::chrono::duration<uint64_t, std::peta> PetaBytes;
-typedef std::chrono::duration<uint64_t, std::exa> ExaBytes;
+using Bytes = std::chrono::duration<uint64_t>;
+using KiloBytes = std::chrono::duration<uint64_t, std::kilo>;
+using MegaBytes = std::chrono::duration<uint64_t, std::mega>;
+using GigaBytes = std::chrono::duration<uint64_t, std::giga>;
+using TeraBytes = std::chrono::duration<uint64_t, std::tera>;
+using PetaBytes = std::chrono::duration<uint64_t, std::peta>;
+using ExaBytes = std::chrono::duration<uint64_t, std::exa>;
+
+// IEC units
+using Kebi = std::ratio<1024>;
+using Mebi = std::ratio<1024 * Kebi::num>;
+using Gibi = std::ratio<1024 * Mebi::num>;
+using Tebi = std::ratio<1024 * Gibi::num>;
+using Pebi = std::ratio<1024 * Tebi::num>;
+using Exbi = std::ratio<1024 * Pebi::num>;
+
+using KebiBytes = std::chrono::duration<uint64_t, Kebi>;
+using MebiBytes = std::chrono::duration<uint64_t, Mebi>;
+using GibiBytes = std::chrono::duration<uint64_t, Gibi>;
+using TebiBytes = std::chrono::duration<uint64_t, Tebi>;
+using PebiBytes = std::chrono::duration<uint64_t, Pebi>;
+using ExbiBytes = std::chrono::duration<uint64_t, Exbi>;
 
 // Makes a UDP socket connection to peer_endpoint.  Note, no data is sent, so no information about
 // the validity or availability of the peer is deduced.  If the retrieved local endpoint is

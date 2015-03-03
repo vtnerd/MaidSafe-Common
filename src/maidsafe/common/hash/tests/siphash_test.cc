@@ -30,6 +30,11 @@
 #pragma warning (disable: 4127)
 #endif
 
+#ifdef __GNUC__
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wold-style-cast"
+#endif
+
 namespace maidsafe {
 namespace test {
 
@@ -179,6 +184,10 @@ int siphash(uint8_t *out, const uint8_t *in, uint64_t inlen, const uint8_t *k) {
 
   return 0;
 }
+
+#ifdef __GNUC__
+#pragma GCC diagnostic pop
+#endif
 
 std::array<std::uint8_t, 16> GetRandomSeed() {
   std::array<std::uint8_t, 16> seed{{}};

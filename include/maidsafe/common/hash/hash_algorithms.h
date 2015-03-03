@@ -18,7 +18,9 @@
 #ifndef MAIDSAFE_COMMON_HASH_HASH_ALGORITHMS_H_
 #define MAIDSAFE_COMMON_HASH_HASH_ALGORITHMS_H_
 
+#include "maidsafe/common/hash/algorithms/cryptopp_hash.h"
 #include "maidsafe/common/hash/algorithms/hash_algorithm_base.h"
+#include "maidsafe/common/hash/algorithms/sha.h"
 #include "maidsafe/common/hash/algorithms/siphash.h"
 
 #endif  // MAIDSAFE_COMMON_HASH_HASH_ALGORITHMS_H_

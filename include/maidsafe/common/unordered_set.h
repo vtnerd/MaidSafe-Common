@@ -15,25 +15,23 @@
 
     See the Licences for the specific language governing permissions and limitations relating to
     use of the MaidSafe Software.                                                                 */
-#ifndef MAIDSAFE_COMMON_HASH_HASH_CONTIGUOUS_H_
-#define MAIDSAFE_COMMON_HASH_HASH_CONTIGUOUS_H_
+#ifndef MAIDSAFE_COMMON_UNORDERED_SET_H_
+#define MAIDSAFE_COMMON_UNORDERED_SET_H_
 
-#include <type_traits>
+#include <memory>
+#include <unordered_set>
+
+#include "maidsafe/common/hash/algorithms/siphash.h"
+#include "maidsafe/common/hash/wrappers/seeded_hash.h"
 
 namespace maidsafe {
 
-// Integral types are hashed directly.
-template<typename Type, typename Enable = void>
-struct IsContiguousHashable
-  : std::integral_constant<bool, std::is_integral<Type>::value || std::is_enum<Type>::value>{};
-
-template<typename HashAlgorithm, typename Contiguous>
-inline
-typename std::enable_if<IsContiguousHashable<Contiguous>::value>::type HashAppend(
-    HashAlgorithm& hash, const Contiguous& value) {
-  hash.Update(reinterpret_cast<const std::uint8_t*>(&value), sizeof(value));
-}
+template<
+  typename Key,
+  typename Equal = std::equal_to<Key>,
+  typename Allocator = std::allocator<Key>>
+using unordered_set = std::unordered_set<Key, SeededHash<SipHash>, Equal, Allocator>;
 
 }  // namespace maidsafe
 
-#endif  // MAIDSAFE_COMMON_HASH_HASH_CONTIGUOUS_H_
+#endif  // MAIDSAFE_COMMON_UNORDERED_SET_H_

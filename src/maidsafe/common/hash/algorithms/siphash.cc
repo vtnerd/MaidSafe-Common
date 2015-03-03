@@ -44,6 +44,11 @@
 #pragma warning (disable: 4127)
 #endif
 
+#ifdef __GNUC__
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wold-style-cast"
+#endif
+
 
 #if defined(ROTL)      || \
     defined(U32TO8_LE) || \
@@ -164,6 +169,10 @@ unsigned SipHash::Compress(const std::uint8_t* in, std::uint64_t inlen) MAIDSAFE
 
   return left;
 }
+
+#ifdef __GNUC__
+#pragma GCC diagnostic pop
+#endif
 
 void SipHash::Update(const std::uint8_t* in, std::uint64_t inlen) MAIDSAFE_NOEXCEPT {
   assert(remainder_length_ < remainder_.size());

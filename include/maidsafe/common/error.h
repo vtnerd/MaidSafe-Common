@@ -241,7 +241,11 @@ std::error_condition make_error_condition(RoutingErrors code);
 const std::error_category& GetRoutingCategory();
 routing_error MakeError(RoutingErrors code);
 
-enum class NfsErrors { failed_to_get_data = 1, timed_out };
+enum class NfsErrors {
+  failed_to_get_data = 1,
+  timed_out,
+  bad_modify_version
+};
 
 class nfs_error : public maidsafe_error {
  public:

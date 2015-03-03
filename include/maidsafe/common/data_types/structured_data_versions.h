@@ -83,9 +83,10 @@ For the purposes of deleting versions (see 'DeleteBranchUntilFork' below), the b
 #include "boost/optional/optional.hpp"
 
 #include "maidsafe/common/config.h"
+#include "maidsafe/common/data_types/immutable_data.h"
+#include "maidsafe/common/hash/hash_optional.h"
 #include "maidsafe/common/tagged_value.h"
 #include "maidsafe/common/types.h"
-#include "maidsafe/common/data_types/immutable_data.h"
 
 namespace maidsafe {
 
@@ -115,6 +116,11 @@ class StructuredDataVersions {
     template <typename Archive>
     Archive& serialize(Archive& archive) {
       return archive(index, id, forking_child_count);
+    }
+
+    template<typename HashAlgorithm>
+    void HashAppend(HashAlgorithm& hash) const {
+      hash(index, id, forking_child_count);
     }
 
     Index index;

@@ -125,6 +125,11 @@ class BoundedString {
     return ref_archive(string());
   }
 
+  template<typename HashAlgorithm>
+  void HashAppend(HashAlgorithm& hash) const {
+    hash(string());
+  }
+
   const StringType& string() const {
     if (!valid_) {
       LOG(kError) << "class uninitialised";

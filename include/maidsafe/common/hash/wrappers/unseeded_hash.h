@@ -15,28 +15,19 @@
 
     See the Licences for the specific language governing permissions and limitations relating to
     use of the MaidSafe Software.                                                                 */
-#ifndef MAIDSAFE_COMMON_HASH_WRAPPERS_SEEDED_HASH_H_
-#define MAIDSAFE_COMMON_HASH_WRAPPERS_SEEDED_HASH_H_
+#ifndef MAIDSAFE_COMMON_HASH_WRAPPERS_UNSEEDED_HASH_H_
+#define MAIDSAFE_COMMON_HASH_WRAPPERS_UNSEEDED_HASH_H_
 
-#include <array>
-#include <cstdint>
 #include <type_traits>
-
-#include "maidsafe/common/crypto.h"
 
 namespace maidsafe {
 
 template<typename HashAlgorithm, typename HashedType = void>
-class SeededHash {
+class UnseededHash {
  public:
-  SeededHash() : seed_128bit_() {
-    CryptoPP::RandomNumberGenerator& random = maidsafe::crypto::random_number_generator();
-    random.GenerateBlock(seed_128bit_.data(), seed_128bit_.size());
-  }
-
   template<typename Type>
   decltype(std::declval<HashAlgorithm>().Finalize()) operator()(Type&& value) const {
-    HashAlgorithm hash{seed_128bit_};
+    HashAlgorithm hash{};
     StartHash<HashedType>(hash, std::forward<Type>(value));
     return hash.Finalize();
   }
@@ -56,11 +47,8 @@ class SeededHash {
       HashAlgorithm& hash, const Type& value) {
     hash(value);
   }
-
- private:
-  std::array<std::uint8_t, 16> seed_128bit_;
 };
 
 }  // namespace maidsafe
 
-#endif  // MAIDSAFE_COMMON_HASH_WRAPPERS_SEEDED_HASH_H_
+#endif  // MAIDSAFE_COMMON_HASH_WRAPPERS_UNSEEDED_HASH_H_

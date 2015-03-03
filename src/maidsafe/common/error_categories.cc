@@ -316,6 +316,8 @@ std::string NfsCategory::message(int error_value) const MAIDSAFE_NOEXCEPT {
       return "Routing failed to return requested data";
     case NfsErrors::timed_out:
       return "Timed out";
+    case NfsErrors::bad_modify_version:
+      return "Cannot modify; Version specified is not newest";
     default:
       return "Unknown error in NFS";
   }

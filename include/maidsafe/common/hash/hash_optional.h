@@ -15,25 +15,21 @@
 
     See the Licences for the specific language governing permissions and limitations relating to
     use of the MaidSafe Software.                                                                 */
-#ifndef MAIDSAFE_COMMON_HASH_HASH_CONTIGUOUS_H_
-#define MAIDSAFE_COMMON_HASH_HASH_CONTIGUOUS_H_
+#ifndef MAIDSAFE_COMMON_HASH_HASH_OPTIONAL_H_
+#define MAIDSAFE_COMMON_HASH_HASH_OPTIONAL_H_
 
-#include <type_traits>
+#include "boost/optional.hpp"
 
 namespace maidsafe {
 
-// Integral types are hashed directly.
-template<typename Type, typename Enable = void>
-struct IsContiguousHashable
-  : std::integral_constant<bool, std::is_integral<Type>::value || std::is_enum<Type>::value>{};
-
-template<typename HashAlgorithm, typename Contiguous>
+template<typename HashAlgorithm, typename Type>
 inline
-typename std::enable_if<IsContiguousHashable<Contiguous>::value>::type HashAppend(
-    HashAlgorithm& hash, const Contiguous& value) {
-  hash.Update(reinterpret_cast<const std::uint8_t*>(&value), sizeof(value));
+void HashAppend(HashAlgorithm& hash, const boost::optional<Type>& optional) {
+  if (optional) {
+    hash(*optional);
+  }
 }
 
 }  // namespace maidsafe
 
-#endif  // MAIDSAFE_COMMON_HASH_HASH_CONTIGUOUS_H_
+#endif  // MAIDSAFE_COMMON_HASH_HASH_OPTIONAL_H_

@@ -22,11 +22,13 @@
 #include <algorithm>
 #include <cstdint>
 #include <ostream>
+#include <memory>
 #include <string>
 
 #include "maidsafe/common/config.h"
 #include "maidsafe/common/types.h"
 #include "maidsafe/common/data_types/data_type_macros.h"
+#include "maidsafe/common/hash/hash_string.h"
 
 namespace maidsafe {
 
@@ -52,12 +54,17 @@ struct Name {
   Name& operator=(Name other);
 
   operator Identity() const { return value; }
-  Identity const* operator->() const { return &value; }
-  Identity* operator->() { return &value; }
+  Identity const* operator->() const { return std::addressof(value); }
+  Identity* operator->() { return std::addressof(value); }
 
   template <typename Archive>
   Archive& serialize(Archive& archive) {
     return archive(value);
+  }
+
+  template<typename HashAlgorithm>
+  void HashAppend(HashAlgorithm& hash) const {
+    hash(value);
   }
 
   Identity value;
