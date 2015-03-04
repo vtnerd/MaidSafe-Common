@@ -22,13 +22,22 @@
 #include <cassert>
 #include <memory>
 
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable : 4520)
+#endif
 #include "boost/flyweight.hpp"
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
+
 #include "cereal/cereal.hpp"
 
 namespace cereal {
 
 template <typename Archive, typename Type, typename... Params>
-void save(Archive& archive, const boost::flyweight<Type, Params...>& flyweight) {
+void CEREAL_SAVE_FUNCTION_NAME(Archive& archive,
+                               const boost::flyweight<Type, Params...>& flyweight) {
   const uint32_t id = archive.registerSharedPointer(std::addressof(flyweight.get()));
   archive(make_nvp("id", id));
 
@@ -38,7 +47,7 @@ void save(Archive& archive, const boost::flyweight<Type, Params...>& flyweight) 
 }
 
 template <typename Archive, typename Type, typename... Params>
-void load(Archive& archive, boost::flyweight<Type, Params...>& flyweight) {
+void CEREAL_LOAD_FUNCTION_NAME(Archive& archive, boost::flyweight<Type, Params...>& flyweight) {
   struct Helper {
     explicit Helper(boost::flyweight<Type, Params...> value_in)
       : value(std::move(value_in)) {
@@ -51,7 +60,7 @@ void load(Archive& archive, boost::flyweight<Type, Params...>& flyweight) {
   uint32_t id{};
   archive(make_nvp("id", id));
 
-  if(id & detail::msb_32bit) {
+  if (id & detail::msb_32bit) {
     Type object{};
     archive(make_nvp("data", object));
     ptr = std::make_shared<Helper>(boost::flyweight<Type, Params...>{std::move(object)});
