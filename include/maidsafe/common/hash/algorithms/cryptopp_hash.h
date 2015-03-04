@@ -40,7 +40,7 @@ class CryptoppHash : public detail::HashAlgorithmBase<CryptoppHash<HashAlgorithm
   }
 
   Digest Finalize() {
-    Digest digest{};
+    Digest digest{{}};
     assert(digest.size() == hash_algorithm.DigestSize());
     hash_algorithm.Final(digest.data());
     return digest;
