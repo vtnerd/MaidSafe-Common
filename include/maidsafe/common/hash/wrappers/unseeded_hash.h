@@ -18,34 +18,19 @@
 #ifndef MAIDSAFE_COMMON_HASH_WRAPPERS_UNSEEDED_HASH_H_
 #define MAIDSAFE_COMMON_HASH_WRAPPERS_UNSEEDED_HASH_H_
 
-#include <type_traits>
+#include <utility>
 
 namespace maidsafe {
 
-template<typename HashAlgorithm, typename HashedType = void>
+template<typename HashAlgorithm>
 class UnseededHash {
  public:
-  template<typename Type>
-  decltype(std::declval<HashAlgorithm>().Finalize()) operator()(Type&& value) const {
+  template<typename Type, typename... Types>
+  decltype(std::declval<HashAlgorithm>().Finalize()) operator()(
+      Type&& value, Types&&... values) const {
     HashAlgorithm hash{};
-    StartHash<HashedType>(hash, std::forward<Type>(value));
+    hash(std::forward<Type>(value), std::forward<Types>(values)...);
     return hash.Finalize();
-  }
-
- private:
-  template<typename Type>
-  using IsGeneric = std::is_same<void, Type>;
-
-  template<typename Test, typename Type>
-  static typename std::enable_if<IsGeneric<Test>::value>::type StartHash(
-      HashAlgorithm& hash, Type&& value) {
-    hash(std::forward<Type>(value));
-  }
-
-  template<typename Type>
-  static typename std::enable_if<!IsGeneric<Type>::value>::type StartHash(
-      HashAlgorithm& hash, const Type& value) {
-    hash(value);
   }
 };
 

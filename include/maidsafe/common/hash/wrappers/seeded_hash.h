@@ -15,18 +15,18 @@
 
     See the Licences for the specific language governing permissions and limitations relating to
     use of the MaidSafe Software.                                                                 */
+
 #ifndef MAIDSAFE_COMMON_HASH_WRAPPERS_SEEDED_HASH_H_
 #define MAIDSAFE_COMMON_HASH_WRAPPERS_SEEDED_HASH_H_
 
 #include <array>
-#include <cstdint>
-#include <type_traits>
 
+#include "maidsafe/common/types.h"
 #include "maidsafe/common/crypto.h"
 
 namespace maidsafe {
 
-template<typename HashAlgorithm, typename HashedType = void>
+template <typename HashAlgorithm>
 class SeededHash {
  public:
   SeededHash() : seed_128bit_() {
@@ -34,31 +34,16 @@ class SeededHash {
     random.GenerateBlock(seed_128bit_.data(), seed_128bit_.size());
   }
 
-  template<typename Type>
-  decltype(std::declval<HashAlgorithm>().Finalize()) operator()(Type&& value) const {
+  template <typename Type, typename... Types>
+  decltype(std::declval<HashAlgorithm>().Finalize()) operator()(Type&& value,
+                                                                Types&&... values) const {
     HashAlgorithm hash{seed_128bit_};
-    StartHash<HashedType>(hash, std::forward<Type>(value));
+    hash(std::forward<Type>(value), std::forward<Types>(values)...);
     return hash.Finalize();
   }
 
  private:
-  template<typename Type>
-  using IsGeneric = std::is_same<void, Type>;
-
-  template<typename Test, typename Type>
-  static typename std::enable_if<IsGeneric<Test>::value>::type StartHash(
-      HashAlgorithm& hash, Type&& value) {
-    hash(std::forward<Type>(value));
-  }
-
-  template<typename Type>
-  static typename std::enable_if<!IsGeneric<Type>::value>::type StartHash(
-      HashAlgorithm& hash, const Type& value) {
-    hash(value);
-  }
-
- private:
-  std::array<std::uint8_t, 16> seed_128bit_;
+  std::array<byte, 16> seed_128bit_;
 };
 
 }  // namespace maidsafe

@@ -15,6 +15,7 @@
 
     See the Licences for the specific language governing permissions and limitations relating to
     use of the MaidSafe Software.                                                                 */
+
 #ifndef MAIDSAFE_COMMON_HASH_ALGORITHMS_SIPHASH_H_
 #define MAIDSAFE_COMMON_HASH_ALGORITHMS_SIPHASH_H_
 
@@ -22,31 +23,33 @@
 #include <cstdint>
 
 #include "maidsafe/common/config.h"
+#include "maidsafe/common/types.h"
 #include "maidsafe/common/hash/algorithms/hash_algorithm_base.h"
 
 namespace maidsafe {
 
 class SipHash : public detail::HashAlgorithmBase<SipHash> {
+ private:
   static const std::size_t kKeySize = 16;
- public:
-  SipHash(const std::array<std::uint8_t, kKeySize>& seed) MAIDSAFE_NOEXCEPT;
 
-  void Update(const std::uint8_t* in, std::uint64_t inlen) MAIDSAFE_NOEXCEPT;
+ public:
+  explicit SipHash(const std::array<byte, kKeySize>& seed) MAIDSAFE_NOEXCEPT;
+
+  void Update(const byte* in, std::uint64_t inlen) MAIDSAFE_NOEXCEPT;
 
   /* Finalizes the hash, but does not modify internal state. More data can be
      added and then properly finalized later. */
   std::uint64_t Finalize() const MAIDSAFE_NOEXCEPT;
 
  private:
-  unsigned Compress(const std::uint8_t* in, std::uint64_t inlen) MAIDSAFE_NOEXCEPT;
+  unsigned Compress(const byte* in, std::uint64_t inlen) MAIDSAFE_NOEXCEPT;
 
- private:
   std::uint64_t v0;
   std::uint64_t v1;
   std::uint64_t v2;
   std::uint64_t v3;
   unsigned remainder_length_;
-  std::array<std::uint8_t, 8> remainder_;
+  std::array<byte, 8> remainder_;
   std::uint8_t b;
 };
 
