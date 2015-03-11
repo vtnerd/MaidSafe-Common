@@ -18,10 +18,18 @@
 #include <memory>
 #include <string>
 
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable : 4520)
+#endif
 #include "boost/flyweight.hpp"
 #include "boost/flyweight/no_locking.hpp"
 #include "boost/flyweight/refcounted.hpp"
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
 #include "cereal/cereal.hpp"
+#include "cereal/types/memory.hpp"
 #include "cereal/types/string.hpp"
 
 #include "maidsafe/common/serialisation/types/boost_flyweight.h"
@@ -52,7 +60,7 @@ TEST(FlyweightSerialisationTest, BEH_OneArgument) {
     EXPECT_EQ(std::addressof(three.get()), std::addressof(five.get()));
 
     serialised = Serialise(one, two, three, four, five);
-    
+
     const auto larger = Serialise(one.get(), two.get(), three.get(), four.get(), five.get());
     EXPECT_LT(serialised.size(), larger.size());
   }
@@ -92,7 +100,7 @@ TEST(FlyweightSerialisationTest, BEH_MultipleArguments) {
     EXPECT_EQ(std::addressof(three.get()), std::addressof(five.get()));
 
     serialised = Serialise(one, two, three, four, five);
-    
+
     const auto larger = Serialise(one.get(), two.get(), three.get(), four.get(), five.get());
     EXPECT_LT(serialised.size(), larger.size());
   }
@@ -110,6 +118,22 @@ TEST(FlyweightSerialisationTest, BEH_MultipleArguments) {
     EXPECT_STREQ(string_one, four.get().c_str());
     EXPECT_STREQ(string_two, five.get().c_str());
   }
+}
+
+TEST(FlyweightSerialisationTest, BEH_WithSharedPointer) {
+  using FlyString = boost::flyweight<std::string>;
+
+  const auto test_string = "this is one string";
+  const auto serialised =
+    Serialise(FlyString{test_string}, std::make_shared<std::string>(test_string));
+
+  FlyString string1{};
+  std::shared_ptr<std::string> string2{};
+  Parse(serialised, string1, string2);
+
+  EXPECT_STREQ(test_string, string1.get().c_str());
+  EXPECT_STREQ(test_string, string2->c_str());
+  EXPECT_NE(std::addressof(string1.get()), string2.get());
 }
 
 }  // namespace test

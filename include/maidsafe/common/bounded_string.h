@@ -22,6 +22,8 @@
 #include <algorithm>
 #include <string>
 
+#include "cereal/types/string.hpp"
+
 #include "maidsafe/common/config.h"
 #include "maidsafe/common/error.h"
 #include "maidsafe/common/log.h"
@@ -37,6 +39,8 @@ namespace detail {
 template <size_t min, size_t max = -1, typename StringType = std::string>
 class BoundedString {
  public:
+  MAIDSAFE_CONSTEXPR_OR_CONST static bool use_serialize_for_hashing = true;
+
   BoundedString()
       : string_(),
         // Use OutwithBounds() to invoke static_asserts
@@ -123,11 +127,6 @@ class BoundedString {
   template <typename Archive>
   Archive& save(Archive& ref_archive) const {
     return ref_archive(string());
-  }
-
-  template<typename HashAlgorithm>
-  void HashAppend(HashAlgorithm& hash) const {
-    hash(string());
   }
 
   const StringType& string() const {
