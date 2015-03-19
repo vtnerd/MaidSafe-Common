@@ -21,6 +21,8 @@
 
 #include <array>
 
+#include <valgrind/memcheck.h>
+
 #include "maidsafe/common/types.h"
 #include "maidsafe/common/crypto.h"
 
@@ -32,6 +34,7 @@ class SeededHash {
   SeededHash() : seed_128bit_() {
     CryptoPP::RandomNumberGenerator& random = maidsafe::crypto::random_number_generator();
     random.GenerateBlock(seed_128bit_.data(), seed_128bit_.size());
+    VALGRIND_MAKE_MEM_DEFINED_IF_ADDRESSABLE(seed_128bit_.data(), seed_128bit_.size());
   }
 
   template <typename Type, typename... Types>

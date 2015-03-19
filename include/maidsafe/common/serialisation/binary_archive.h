@@ -118,7 +118,6 @@ inline void CEREAL_LOAD_FUNCTION_NAME(BinaryInputArchive& ar, cereal::BinaryData
 // Register archives for polymorphic support
 CEREAL_REGISTER_ARCHIVE(maidsafe::BinaryOutputArchive)
 CEREAL_REGISTER_ARCHIVE(maidsafe::BinaryInputArchive)
-CEREAL_SETUP_ARCHIVE_TRAITS(maidsafe::BinaryInputArchive, maidsafe::BinaryOutputArchive)
 
 // tie input and output archives together
 CEREAL_SETUP_ARCHIVE_TRAITS(maidsafe::BinaryInputArchive, maidsafe::BinaryOutputArchive)
